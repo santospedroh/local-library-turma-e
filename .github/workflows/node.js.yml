@@ -113,14 +113,19 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: "production"
-    needs: [deploy-homolog]
+    needs: [deploy-homolog]  
+    
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-      - name: Deploy Google App Engine
-        uses: etereo-io/deploy-gae-action
+    
+      - name: Deploy to Google App Engine
+        uses: etereo-io/deploy-gae-action@v2.0.4
         with:
-          service-account: ${{ secrets.SERVICE_ACCOUNT }}
-          project-id: ${{ secrets.PROJECT_ID }}
-          gae_config_path: "./app.yaml"
+          service_account:  ${{ secrets.SERVICE_ACCOUNT }}
+          project_id: ${{ secrets.PROJECT_ID }}
+          gae_config_path: './app.yaml'
           no_cache: false
+          dispatch_yaml: './dispatch.yaml'
+
+
