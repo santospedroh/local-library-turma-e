@@ -1,4 +1,4 @@
-name: CI/CD Library
+name: DevOps CI/CD Library 
 
 on:
   push:
