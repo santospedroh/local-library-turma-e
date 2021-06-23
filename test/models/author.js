@@ -33,7 +33,7 @@ describe("Author Schema", function () {
         date_of_death: date_of_death,
       });
 
-      author.date_of_birth_formatted.should.equal("30 de mai. de 1970");
+      author.date_of_birth_formatted.should.equal("May 30, 1970");
     });
   });
 });
