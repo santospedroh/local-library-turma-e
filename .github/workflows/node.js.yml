@@ -1,14 +1,10 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
-name: Node.js Pipeline
+name: CI/CD Library
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
-    
+    branches: [main]
 
 jobs:
   build:
@@ -21,40 +17,38 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test --if-present
-  
-  
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm test --if-present
+
   prettier:
     name: Prettier
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        # Make sure the actual branch is checked out when running on pull requests
-        ref: ${{ github.head_ref }}
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          # Make sure the actual branch is checked out when running on pull requests
+          ref: ${{ github.head_ref }}
 
-    - name: Prettify code
-      uses: creyD/prettier_action@v3.1
-      with:
-        # This part is also where you can pass other options, for example:
-        prettier_options: --write **/*.{js,md}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
-  
+      - name: Prettify code
+        uses: creyD/prettier_action@v3.1
+        with:
+          # This part is also where you can pass other options, for example:
+          prettier_options: --write **/*.{js,md}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   linter:
     name: Lint code base
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -71,14 +65,18 @@ jobs:
           VALIDATE_CSS: true
           VALIDATE_MARKDOWN: true
           JAVASCRIPT_DEFAULT_STYLE: prettier
-  
-  
-  deploy:
+
+  #-------------------------------------------------------------------------------#
+  #-------------------------------------------------------------------------------#
+  # Deploy em Homologação (Heroku)                                                #
+  #-------------------------------------------------------------------------------#
+  #-------------------------------------------------------------------------------#
+
+  deploy-homolog:
+    name: Deploy Homolog
     runs-on: ubuntu-latest
-    env:
-      DB_URI: $${{ secrets.DB_URI }}
-      NODE_ENV: production
-      
+    environment:
+      name: "homolog"
     needs: [build, prettier]
     steps:
       - name: Checkout Code
@@ -86,22 +84,21 @@ jobs:
         with:
           # Full git history is needed to build on Heroku
           fetch-depth: 0
-      
+
       - name: Login Heroku
         uses: akhileshns/heroku-deploy@v3.10.9 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: pedrolacerda-local-library
-          heroku_email: pedrohrl1@gmail.com
+          heroku_app_name: devops-local-library-hom
+          heroku_email: santos.pedroh@gmail.com
           justlogin: true
-      
+
       - name: Set Heroku remote
-        run: heroku git:remote -a pedrolacerda-local-library
-      
+        run: heroku git:remote -a devops-local-library-hom
+
       - name: Set env variables
         run: |
-          heroku config:set NODE_ENV=${{ env.NODE_ENV }}
-          heroku config:set MONGODB_URI=${{ env.DB_URI }}
-      
+          heroku config:set MONGODB_URI=${{ secrets.DB_URI }}
+
       - name: Push code to Heroku
         run: git push heroku main
