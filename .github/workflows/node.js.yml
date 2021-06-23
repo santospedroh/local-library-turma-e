@@ -120,12 +120,16 @@ jobs:
         uses: actions/checkout@v2
     
       - name: Deploy to Google App Engine
-        uses: etereo-io/deploy-gae-action@v2.0.4
+        uses: vijayp23/deploy-gae-action@1.0.1
         with:
-          service_account:  ${{ secrets.SERVICE_ACCOUNT }}
-          project_id: ${{ secrets.PROJECT_ID }}
-          gae_config_path: './app.yaml'
-          no_cache: false
-          dispatch_yaml: './dispatch.yaml'
+          service-account: ${{ secrets.SERVICE_ACCOUNT }}
+          project-id: ${{ secrets.PROJECT_ID }}
+          config-files: './app.yml'
+          # Optional
+          service-version: 3                          
+          delete-previous-versions: true             
+          service-name: 'default'
+          no-cache: false                             
+          debug: false                                
 
 
