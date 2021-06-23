@@ -102,6 +102,12 @@ jobs:
       - name: Push code to Heroku
         run: git push heroku main
 
+  #-------------------------------------------------------------------------------#
+  #-------------------------------------------------------------------------------#
+  # Deploy em Produção (Google App Enginer)                                       #
+  #-------------------------------------------------------------------------------#
+  #-------------------------------------------------------------------------------#
+
   deploy-prod:
     name: Deploy Production
     runs-on: ubuntu-latest
@@ -111,15 +117,10 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-        with:
-          # Full git history is needed to build on Heroku
-          fetch-depth: 0
       - name: Deploy Google App Engine
-        uses: vijayp23/deploy-gae-action@1.0.1
+        uses: etereo-io/deploy-gae-action
         with:
           service-account: ${{ secrets.SERVICE_ACCOUNT }}
           project-id: ${{ secrets.PROJECT_ID }}
-          config-files: "./app.yml"
-          delete-previous-versions: true
-          no-cache: false
-          debug: false
+          gae_config_path: "./app.yaml"
+          no_cache: false
