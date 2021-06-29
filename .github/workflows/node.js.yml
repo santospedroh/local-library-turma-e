@@ -150,11 +150,11 @@ jobs:
       - name: Checkout Code Deploy Google App Engine
         uses: actions/checkout@v2
         
-      - name: Setup Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0.2.0
+      - id: deploy
+        uses: GoogleCloudPlatform/github-actions/appengine-deploy@master
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          credentials: ${{ secrets.GAE_CREDENTIALS }}
 
-      - name: Deploy to App Engine
-        run: gcloud app deploy app.yaml --quiet --no-promote --version v1
+      # Example of using the output
+      - id: test
+        run: curl "${{ steps.deploy.outputs.url }}"
