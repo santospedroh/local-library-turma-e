@@ -147,18 +147,21 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-    
-      - name: Deploy to Google App Engine
-        uses: vijayp23/deploy-gae-action@1.0.1
+
+      - name: Deploy GAE
+      - uses: google-github-actions/deploy-appengine@main
         with:
-          service-account: ${{ secrets.SERVICE_ACCOUNT }}
-          project-id: ${{ secrets.PROJECT_ID }}
-          config-files: './app.yml'
-          # Optional
-          service-version: 3                          
-          delete-previous-versions: true             
-          service-name: 'default'
-          no-cache: false                             
-          debug: false                                
-
-
+          credentials: ${{ secrets.GAE_CREDENTIALS }}
+    
+      #- name: Deploy to Google App Engine
+      #  uses: vijayp23/deploy-gae-action@1.0.1
+      #  with:
+      #    service-account: ${{ secrets.SERVICE_ACCOUNT }}
+      #    project-id: ${{ secrets.PROJECT_ID }}
+      #    config-files: './app.yml'
+      #    # Optional
+      #    service-version: 3                          
+      #    delete-previous-versions: true             
+      #    service-name: 'default'
+      #    no-cache: false                             
+      #    debug: false                                
