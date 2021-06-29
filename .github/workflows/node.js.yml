@@ -150,7 +150,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - id: deploy google
       - name: Deploy GAE
       - uses: google-github-actions/deploy-appengine@main
         with:
           credentials: ${{ secrets.GAE_CREDENTIALS }}
+          
+      # Example of using the output
+      - id: test
+        run: curl "${{ steps.deploy.outputs.url }}"
