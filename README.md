@@ -76,4 +76,3 @@ You can also use [Mockaroo](https://www.mockaroo.com/) to generate some mock dat
 ```bash
 npm install async
 ```
-TESTE
