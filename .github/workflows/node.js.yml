@@ -126,7 +126,7 @@ jobs:
 
       - name: Set env variables
         run: |
-          heroku config:set MONGODB_URI=${{ secrets.DB_URI }}
+          heroku config:set MONGODB_URI=${{ secrets.DB_URI_HOM }}
 
       - name: Push code to Heroku
         run: git push heroku main
